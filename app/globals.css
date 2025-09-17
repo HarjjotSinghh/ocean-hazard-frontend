@@ -1,0 +1,394 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* INCOIS-inspired color scheme */
+  --background: #ffffff; /* Main background */
+  --foreground: #1e3a8a; /* INCOIS blue text color */
+  --card: #f8fafc; /* Light card background */
+  --card-foreground: #1e3a8a; /* Card text color */
+  --popover: #ffffff; /* Popover background */
+  --popover-foreground: #1e3a8a; /* Popover text color */
+  --primary: #1e40af; /* INCOIS primary blue */
+  --primary-foreground: #ffffff; /* Primary text color */
+  --secondary: #e2e8f0; /* Light blue-gray border */
+  --secondary-foreground: #475569; /* Secondary text color */
+  --muted: #f1f5f9; /* Muted background */
+  --muted-foreground: #64748b; /* Muted text */
+  --accent: #3b82f6; /* Accent blue */
+  --accent-foreground: #ffffff; /* Accent text */
+  --destructive: #dc2626; /* Destructive actions */
+  --destructive-foreground: #ffffff; /* Text for destructive actions */
+  --border: #cbd5e1; /* General border color */
+  --input: #ffffff; /* Input field background */
+  --ring: #3b82f6; /* Focus ring color */
+  --chart-1: #1e40af; /* Chart color 1 - INCOIS blue */
+  --chart-2: #3b82f6; /* Chart color 2 - Light blue */
+  --chart-3: #60a5fa; /* Chart color 3 - Lighter blue */
+  --chart-4: #93c5fd; /* Chart color 4 - Very light blue */
+  --chart-5: #dbeafe; /* Chart color 5 - Pale blue */
+  --radius: 4px; /* Slightly rounded corners for modern look */
+  --sidebar: #1e40af; /* INCOIS blue sidebar */
+  --sidebar-foreground: #ffffff; /* Sidebar text */
+  --sidebar-primary: #ffffff; /* Sidebar primary color */
+  --sidebar-primary-foreground: #1e40af; /* Sidebar primary text */
+  --sidebar-accent: #3b82f6; /* Sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* Sidebar accent text */
+  --sidebar-border: #1e3a8a; /* Sidebar border */
+  --sidebar-ring: #3b82f6; /* Sidebar focus ring */
+  
+  /* INCOIS specific colors */
+  --incois-blue: #1e40af;
+  --incois-light-blue: #3b82f6;
+  --incois-navy: #1e3a8a;
+  --incois-gray: #64748b;
+  --incois-light-gray: #f1f5f9;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --card-foreground: #e2e8f0;
+  --popover: #1e293b;
+  --popover-foreground: #e2e8f0;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #d1d5db;
+  --secondary-foreground: #4b5563;
+  --muted: #f8fafc;
+  --muted-foreground: #4b5563;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
+  --input: #ffffff;
+  --ring: #ea580c;
+  --chart-1: #4b5563;
+  --chart-2: #ea580c;
+  --chart-3: #d1d5db;
+  --chart-4: #ffffff;
+  --chart-5: #fffbeb;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #4b5563;
+  --sidebar-primary: #4b5563;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ea580c;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #d1d5db;
+  --sidebar-ring: #ea580c;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* INCOIS-inspired styling */
+.retro-table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.retro-table th,
+.retro-table td {
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.retro-table th {
+  background-color: var(--incois-blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.retro-table tr:nth-child(even) {
+  background-color: var(--muted);
+}
+
+.retro-table tr:hover {
+  background-color: var(--accent)/10;
+}
+
+.retro-header {
+  background: linear-gradient(135deg, var(--incois-blue) 0%, var(--incois-light-blue) 100%);
+  color: #ffffff;
+  padding: 24px;
+  text-align: center;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1px;
+}
+
+.retro-nav {
+  background-color: var(--incois-blue);
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.retro-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 16px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.retro-nav a:hover {
+  background-color: var(--incois-light-blue);
+  color: #ffffff;
+}
+
+.retro-nav a:last-child {
+  border-right: none;
+}
+
+.retro-nav-item {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 16px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+}
+
+.retro-nav-item:hover {
+  background-color: var(--incois-light-blue);
+  color: #ffffff;
+}
+
+.retro-nav-item:last-child {
+  border-right: none;
+}
+
+.retro-button {
+  background-color: var(--incois-blue);
+  color: #ffffff;
+  border: 1px solid var(--incois-blue);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.retro-button:hover {
+  background-color: var(--incois-light-blue);
+  border-color: var(--incois-light-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.retro-button.secondary {
+  background-color: transparent;
+  color: var(--incois-blue);
+  border-color: var(--incois-blue);
+}
+
+.retro-button.secondary:hover {
+  background-color: var(--incois-blue);
+  color: #ffffff;
+}
+
+.retro-form {
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.retro-input {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background-color: var(--input);
+  width: 100%;
+  border-radius: var(--radius);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.retro-input:focus {
+  outline: none;
+  border-color: var(--incois-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.retro-select {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background-color: var(--input);
+  border-radius: var(--radius);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.retro-select:focus {
+  outline: none;
+  border-color: var(--incois-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* INCOIS Logo and Branding */
+.incois-logo {
+  height: 60px;
+  width: auto;
+}
+
+.incois-breadcrumb {
+  background-color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* Map container styling */
+.map-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Statistics cards */
+.stats-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* INCOIS Statistics Cards */
+.incois-stats-card {
+  background: linear-gradient(135deg, var(--incois-blue), var(--incois-light-blue));
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.incois-stats-card:hover {
+  transform: translateY(-2px);
+}
+
+/* INCOIS Form Styles */
+.retro-form {
+  background: white;
+  border: 2px solid var(--incois-blue);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.retro-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.retro-input:focus {
+  outline: none;
+  border-color: var(--incois-blue);
+  box-shadow: 0 0 0 3px rgba(0, 123, 191, 0.1);
+}
+
+.retro-input:hover {
+  border-color: var(--incois-light-blue);
+}
+
+.retro-button.secondary {
+  background-color: #f8f9fa;
+  color: var(--incois-blue);
+  border: 2px solid var(--incois-blue);
+}
+
+.retro-button.secondary:hover {
+  background-color: var(--incois-blue);
+  color: white;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
