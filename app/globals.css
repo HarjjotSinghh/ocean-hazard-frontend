@@ -4,47 +4,49 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* INCOIS-inspired color scheme */
-  --background: #ffffff; /* Main background */
-  --foreground: #1e3a8a; /* INCOIS blue text color */
-  --card: #f8fafc; /* Light card background */
-  --card-foreground: #1e3a8a; /* Card text color */
-  --popover: #ffffff; /* Popover background */
-  --popover-foreground: #1e3a8a; /* Popover text color */
-  --primary: #1e40af; /* INCOIS primary blue */
-  --primary-foreground: #ffffff; /* Primary text color */
-  --secondary: #e2e8f0; /* Light blue-gray border */
-  --secondary-foreground: #475569; /* Secondary text color */
-  --muted: #f1f5f9; /* Muted background */
-  --muted-foreground: #64748b; /* Muted text */
-  --accent: #3b82f6; /* Accent blue */
-  --accent-foreground: #ffffff; /* Accent text */
-  --destructive: #dc2626; /* Destructive actions */
-  --destructive-foreground: #ffffff; /* Text for destructive actions */
-  --border: #cbd5e1; /* General border color */
-  --input: #ffffff; /* Input field background */
-  --ring: #3b82f6; /* Focus ring color */
-  --chart-1: #1e40af; /* Chart color 1 - INCOIS blue */
-  --chart-2: #3b82f6; /* Chart color 2 - Light blue */
-  --chart-3: #60a5fa; /* Chart color 3 - Lighter blue */
-  --chart-4: #93c5fd; /* Chart color 4 - Very light blue */
-  --chart-5: #dbeafe; /* Chart color 5 - Pale blue */
-  --radius: 4px; /* Slightly rounded corners for modern look */
-  --sidebar: #1e40af; /* INCOIS blue sidebar */
-  --sidebar-foreground: #ffffff; /* Sidebar text */
-  --sidebar-primary: #ffffff; /* Sidebar primary color */
-  --sidebar-primary-foreground: #1e40af; /* Sidebar primary text */
-  --sidebar-accent: #3b82f6; /* Sidebar accent */
-  --sidebar-accent-foreground: #ffffff; /* Sidebar accent text */
-  --sidebar-border: #1e3a8a; /* Sidebar border */
-  --sidebar-ring: #3b82f6; /* Sidebar focus ring */
+  /* INCOIS Government Website Color Scheme */
+  --background: #ffffff; /* Pure white background */
+  --foreground: #003366; /* Deep navy blue for text */
+  --card: #f8f9fa; /* Very light gray card background */
+  --card-foreground: #003366; /* Navy blue card text */
+  --popover: #ffffff; /* White popover background */
+  --popover-foreground: #003366; /* Navy blue popover text */
+  --primary: #003366; /* Official government navy blue */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #e9ecef; /* Light gray for secondary elements */
+  --secondary-foreground: #495057; /* Dark gray secondary text */
+  --muted: #f8f9fa; /* Very light gray muted background */
+  --muted-foreground: #6c757d; /* Medium gray muted text */
+  --accent: #0056b3; /* Slightly lighter blue for accents */
+  --accent-foreground: #ffffff; /* White accent text */
+  --destructive: #dc3545; /* Standard red for destructive actions */
+  --destructive-foreground: #ffffff; /* White text for destructive actions */
+  --border: #dee2e6; /* Light gray border */
+  --input: #ffffff; /* White input background */
+  --ring: #0056b3; /* Blue focus ring */
+  --chart-1: #003366; /* Primary navy blue */
+  --chart-2: #0056b3; /* Medium blue */
+  --chart-3: #007bff; /* Bright blue */
+  --chart-4: #6c757d; /* Gray */
+  --chart-5: #e9ecef; /* Light gray */
+  --radius: 0px; /* Government website style - no rounded corners */
+  --sidebar: #003366; /* Navy blue sidebar */
+  --sidebar-foreground: #ffffff; /* White sidebar text */
+  --sidebar-primary: #ffffff; /* White sidebar primary */
+  --sidebar-primary-foreground: #003366; /* Navy blue sidebar primary text */
+  --sidebar-accent: #0056b3; /* Blue sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* White sidebar accent text */
+  --sidebar-border: #002244; /* Darker navy sidebar border */
+  --sidebar-ring: #0056b3; /* Blue sidebar focus ring */
   
-  /* INCOIS specific colors */
-  --incois-blue: #1e40af;
-  --incois-light-blue: #3b82f6;
-  --incois-navy: #1e3a8a;
-  --incois-gray: #64748b;
-  --incois-light-gray: #f1f5f9;
+  /* INCOIS Government specific colors */
+  --incois-blue: #003366; /* Official INCOIS navy blue */
+  --incois-light-blue: #0056b3; /* Lighter government blue */
+  --incois-navy: #002244; /* Darker navy for borders */
+  --incois-gray: #6c757d; /* Standard gray */
+  --incois-light-gray: #f8f9fa; /* Light gray backgrounds */
+  --government-orange: #ff6600; /* Government accent orange */
+  --government-green: #28a745; /* Government success green */
 }
 
 .dark {
@@ -83,7 +85,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-open-sans), var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -140,7 +142,7 @@
   background-color: var(--card);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
 }
 
 .retro-table th,
@@ -154,9 +156,10 @@
   background-color: var(--incois-blue);
   color: #ffffff;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.05em;
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .retro-table tr:nth-child(even) {
@@ -168,35 +171,41 @@
 }
 
 .retro-header {
-  background: linear-gradient(135deg, var(--incois-blue) 0%, var(--incois-light-blue) 100%);
+  background: var(--incois-blue);
   color: #ffffff;
-  padding: 24px;
+  padding: 20px 24px;
   text-align: center;
   border-radius: var(--radius);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1px;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  margin-bottom: 0px;
+  border-bottom: 3px solid var(--government-orange);
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .retro-nav {
-  background-color: var(--incois-blue);
+  background-color: var(--incois-light-blue);
   border: none;
   padding: 0;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .retro-nav a {
   color: #ffffff;
   text-decoration: none;
-  padding: 16px 20px;
+  padding: 12px 18px;
   font-weight: 500;
+  font-size: 14px;
   transition: all 0.2s ease;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .retro-nav a:hover {
-  background-color: var(--incois-light-blue);
+  background-color: var(--government-orange);
   color: #ffffff;
 }
 
@@ -226,21 +235,50 @@
 .retro-button {
   background-color: var(--incois-blue);
   color: #ffffff;
-  border: 1px solid var(--incois-blue);
-  padding: 10px 20px;
+  border: 2px solid var(--incois-blue);
+  padding: 10px 24px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius);
   transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
+  font-family: var(--font-open-sans), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 13px;
 }
 
 .retro-button:hover {
-  background-color: var(--incois-light-blue);
-  border-color: var(--incois-light-blue);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--government-orange);
+  border-color: var(--government-orange);
+  color: #ffffff;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+}
+
+/* INCOIS Government Colors */
+.text-incois-blue {
+  color: var(--incois-blue);
+}
+
+.text-government-orange {
+  color: var(--government-orange);
+}
+
+.bg-incois-blue {
+  background-color: var(--incois-blue);
+}
+
+.bg-government-orange {
+  background-color: var(--government-orange);
+}
+
+.border-incois-blue {
+  border-color: var(--incois-blue);
+}
+
+.border-government-orange {
+  border-color: var(--government-orange);
 }
 
 .retro-button.secondary {
@@ -259,38 +297,51 @@
   background-color: var(--card);
   padding: 24px;
   border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
 }
 
 .retro-input {
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-  background-color: var(--input);
   width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
   border-radius: var(--radius);
   font-size: 14px;
-  transition: border-color 0.2s ease;
+  font-family: var(--font-open-sans), sans-serif;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  letter-spacing: 0.025em;
 }
 
 .retro-input:focus {
   outline: none;
   border-color: var(--incois-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  /* box-shadow: 0 0 0 3px rgba(0, 123, 191, 0.1); */
+}
+
+.retro-input:hover {
+  border-color: var(--incois-light-blue);
 }
 
 .retro-select {
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-  background-color: var(--input);
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
   border-radius: var(--radius);
   font-size: 14px;
-  transition: border-color 0.2s ease;
+  font-family: var(--font-open-sans), sans-serif;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  letter-spacing: 0.025em;
 }
 
 .retro-select:focus {
   outline: none;
   border-color: var(--incois-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  /* box-shadow: 0 0 0 3px rgba(0, 123, 191, 0.1); */
+}
+
+.retro-select:hover {
+  border-color: var(--incois-light-blue);
 }
 
 /* INCOIS Logo and Branding */
@@ -312,7 +363,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); */
 }
 
 /* Statistics cards */
@@ -321,13 +372,13 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
   transition: transform 0.2s ease;
 }
 
 .stats-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 }
 
 /* INCOIS Statistics Cards */
@@ -335,8 +386,8 @@
   background: linear-gradient(135deg, var(--incois-blue), var(--incois-light-blue));
   color: white;
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   transition: transform 0.2s ease;
 }
 
@@ -348,29 +399,10 @@
 .retro-form {
   background: white;
   border: 2px solid var(--incois-blue);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 32px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.retro-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: all 0.2s ease;
-  background-color: #ffffff;
-}
-
-.retro-input:focus {
-  outline: none;
-  border-color: var(--incois-blue);
-  box-shadow: 0 0 0 3px rgba(0, 123, 191, 0.1);
-}
-
-.retro-input:hover {
-  border-color: var(--incois-light-blue);
+  /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); */
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .retro-button.secondary {

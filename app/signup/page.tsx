@@ -3,8 +3,12 @@
 import { RetroLayout } from "@/components/retro-layout";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { registerUser } from "@/lib/actions/auth";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -12,15 +16,46 @@ export default function SignupPage() {
     phone: "",
     organization: "",
     designation: "",
+    role: "USER",
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log("Signup attempt:", formData);
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await registerUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        organization: formData.organization,
+        designation: formData.designation,
+        role: formData.role,
+        password: formData.password,
+      });
+
+      // posting handles the redirect from login page to home/analytics/officials page
+      // if (result.user) {
+      //   router.push('/');
+      // }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -28,6 +63,13 @@ export default function SignupPage() {
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    });
+  };
+
+  const handleRoleChange = (value: string) => {
+    setFormData({
+      ...formData,
+      role: value,
     });
   };
 
@@ -45,6 +87,12 @@ export default function SignupPage() {
             <h1 className="text-2xl font-bold text-incois-blue mb-2">Ocean Hazard User Reporting</h1>
             <p className="text-incois-gray">Register for access to the reporting system</p>
           </div>
+
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
 
           {/* Registration Form */}
           <div className="retro-form">
@@ -144,20 +192,36 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="designation" className="block text-sm font-medium text-incois-blue mb-2">
-                    Designation: <span className="text-red-500">*</span>
+                  <label htmlFor="role" className="block text-sm font-medium text-incois-blue mb-2">
+                    Role: <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    id="designation"
-                    name="designation"
-                    value={formData.designation}
-                    onChange={handleChange}
-                    placeholder="Enter your designation"
-                    className="retro-input"
-                    required
-                  />
+                  <Select value={formData.role} onValueChange={handleRoleChange}>
+                    <SelectTrigger className="retro-input">
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USER">Default (Citizen)</SelectItem>
+                      <SelectItem value="GOVT_OFFICIAL">Government Official</SelectItem>
+                      <SelectItem value="ANALYST">Analyst</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="designation" className="block text-sm font-medium text-incois-blue mb-2">
+                  Designation: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="designation"
+                  name="designation"
+                  value={formData.designation}
+                  onChange={handleChange}
+                  placeholder="Enter your designation"
+                  className="retro-input"
+                  required
+                />
               </div>
 
               {/* Password Information */}
@@ -223,9 +287,9 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   className="retro-button w-full"
-                  disabled={!formData.agreeToTerms}
+                  disabled={!formData.agreeToTerms || isLoading}
                 >
-                  Register Account
+                  {isLoading ? 'Registering...' : 'Register Account'}
                 </button>
               </div>
             </form>

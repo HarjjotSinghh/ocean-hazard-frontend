@@ -1,14 +1,34 @@
 "use client"
 
 import { useState } from "react"
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, AreaChart, Area } from "recharts"
-import { RetroLayout } from "@/components/retro-layout"
-import { RetroTable } from "@/components/retro-table"
-import { DashboardFilters } from "@/components/dashboard-filters"
-import { MapVisualization } from "@/components/map-visualization"
-import { SocialMediaActivity } from "@/components/social-media-activity"
-import { Button } from "@/components/ui/button"
-import { Download } from "lucide-react"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  ComposedChart,
+  AreaChart,
+  Area,
+} from "recharts";
+import { RetroLayout } from "@/components/retro-layout";
+import { RetroTable } from "@/components/retro-table";
+import { DashboardFilters } from "@/components/dashboard-filters";
+import { MapVisualization } from "@/components/map-visualization";
+import { SocialMediaActivity } from "@/components/social-media-activity";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 // Mock data for demonstration
 const mockReports = [
@@ -42,7 +62,7 @@ const mockReports = [
     status: "Investigating",
     verified: false,
   },
-]
+];
 
 const mockHotspots = [
   {
@@ -63,7 +83,7 @@ const mockHotspots = [
     riskLevel: "Low",
     lastUpdated: "2024-12-16 12:15:00",
   },
-]
+];
 
 const dailyActivityData = [
   { time: "00:00", reports: 2, verifications: 1, alerts: 0 },
@@ -74,7 +94,7 @@ const dailyActivityData = [
   { time: "15:00", reports: 15, verifications: 12, alerts: 4 },
   { time: "18:00", reports: 10, verifications: 8, alerts: 2 },
   { time: "21:00", reports: 6, verifications: 5, alerts: 1 },
-]
+];
 
 const hazardTypeDistribution = [
   { name: "High Waves", value: 35, color: "#007BBF" },
@@ -82,7 +102,7 @@ const hazardTypeDistribution = [
   { name: "Rip Currents", value: 20, color: "#00B8D4" },
   { name: "Tidal Anomaly", value: 15, color: "#26C6DA" },
   { name: "Other", value: 5, color: "#80DEEA" },
-]
+];
 
 const weeklyTrendData = [
   { day: "Mon", total: 18, verified: 15, pending: 3 },
@@ -92,7 +112,7 @@ const weeklyTrendData = [
   { day: "Fri", total: 28, verified: 24, pending: 4 },
   { day: "Sat", total: 31, verified: 27, pending: 4 },
   { day: "Sun", total: 26, verified: 22, pending: 4 },
-]
+];
 
 const statePerformanceData = [
   { state: "TN", response: 95, accuracy: 92, coverage: 88 },
@@ -101,7 +121,7 @@ const statePerformanceData = [
   { state: "GJ", response: 89, accuracy: 85, coverage: 79 },
   { state: "WB", response: 88, accuracy: 84, coverage: 81 },
   { state: "MH", response: 87, accuracy: 83, coverage: 78 },
-]
+];
 
 const verificationTimeline = [
   { hour: "1h", verified: 5, pending: 12 },
@@ -112,11 +132,72 @@ const verificationTimeline = [
   { hour: "6h", verified: 22, pending: 6 },
   { hour: "7h", verified: 25, pending: 4 },
   { hour: "8h", verified: 28, pending: 2 },
-]
+];
 
 export default function DashboardPage() {
-  const [filteredReports, setFilteredReports] = useState(mockReports)
-  const [selectedReport, setSelectedReport] = useState<any>(null)
+  const router = useRouter();
+  const [filteredReports, setFilteredReports] = useState(mockReports);
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: sessionData } = await authClient.getSession();
+
+        if (!sessionData) {
+          router.push("/login");
+          return;
+        }
+
+        // Check if user has access to dashboard
+        if (
+          !["GOVT_OFFICIAL", "ANALYST", "USER"].includes(
+            sessionData.user.role || "USER"
+          )
+        ) {
+          router.push("/unauthorized");
+          return;
+        }
+
+        setSession(sessionData);
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        router.push("/login");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <RetroLayout title="Loading...">
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </RetroLayout>
+    );
+  }
+
+  if (!session) {
+    return null; // Will redirect to login
+  }
 
   const reportColumns = [
     { key: "id", label: "Report ID" },
@@ -129,10 +210,14 @@ export default function DashboardPage() {
       key: "verified",
       label: "Verified",
       render: (value: boolean) => (
-        <span className={value ? "text-accent font-bold" : "text-muted-foreground"}>{value ? "YES" : "NO"}</span>
+        <span
+          className={value ? "text-accent font-bold" : "text-muted-foreground"}
+        >
+          {value ? "YES" : "NO"}
+        </span>
       ),
     },
-  ]
+  ];
 
   const hotspotColumns = [
     { key: "location", label: "Location" },
@@ -143,7 +228,11 @@ export default function DashboardPage() {
       render: (value: string) => (
         <span
           className={`font-bold ${
-            value === "High" ? "text-destructive" : value === "Medium" ? "text-accent" : "text-muted-foreground"
+            value === "High"
+              ? "text-destructive"
+              : value === "Medium"
+              ? "text-accent"
+              : "text-muted-foreground"
           }`}
         >
           {value}
@@ -151,69 +240,125 @@ export default function DashboardPage() {
       ),
     },
     { key: "lastUpdated", label: "Last Updated" },
-  ]
+  ];
 
   const handleFilterChange = (filters: any) => {
-    let filtered = mockReports
+    let filtered = mockReports;
 
     if (filters.hazardType) {
-      filtered = filtered.filter((report) => report.hazardType === filters.hazardType)
+      filtered = filtered.filter(
+        (report) => report.hazardType === filters.hazardType
+      );
     }
 
     if (filters.urgency) {
-      filtered = filtered.filter((report) => report.urgency === filters.urgency)
+      filtered = filtered.filter(
+        (report) => report.urgency === filters.urgency
+      );
     }
 
     if (filters.status) {
-      filtered = filtered.filter((report) => report.status === filters.status)
+      filtered = filtered.filter((report) => report.status === filters.status);
     }
 
     if (filters.dateFrom) {
-      filtered = filtered.filter((report) => report.timestamp >= filters.dateFrom)
+      filtered = filtered.filter(
+        (report) => report.timestamp >= filters.dateFrom
+      );
     }
 
-    setFilteredReports(filtered)
-  }
+    setFilteredReports(filtered);
+  };
 
   const reportActions = (report: any) => (
     <div className="space-x-2">
-      <button onClick={() => setSelectedReport(report)} className="retro-button text-xs px-2 py-1">
+      <button
+        onClick={() => setSelectedReport(report)}
+        className="retro-button text-xs px-2 py-1"
+      >
         View Details
       </button>
-      {!report.verified && <button className="retro-button text-xs px-2 py-1 bg-accent">Verify</button>}
+      {!report.verified && (
+        <button className="retro-button text-xs px-2 py-1 bg-accent">
+          Verify
+        </button>
+      )}
     </div>
-  )
+  );
 
   const exportToCSV = (data: any[], filename: string) => {
-    const headers = Object.keys(data[0]).join(",")
-    const rows = data.map(row => Object.values(row).join(",")).join("\n")
-    const csv = `${headers}\n${rows}`
-    
-    const blob = new Blob([csv], { type: "text/csv" })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `${filename}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
+    const headers = Object.keys(data[0]).join(",");
+    const rows = data.map((row) => Object.values(row).join(",")).join("\n");
+    const csv = `${headers}\n${rows}`;
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${filename}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
-    <RetroLayout title="Officials Dashboard - Real-time Ocean Hazard Monitoring">
+    <RetroLayout
+      title={`${
+        session.user.role === "GOVT_OFFICIAL" ? "Officials" : "User"
+      } Dashboard - Real-time Ocean Hazard Monitoring`}
+    >
       <div className="space-y-6">
+        {/* User Profile Section */}
+        <div className="retro-form">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="text-xl font-bold font-mono">
+                Welcome, {session.user.name || session.user.email}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Role:{" "}
+                <span className="font-semibold text-blue-600">
+                  {session.user.role}
+                </span>{" "}
+                | Last Login: {new Date().toLocaleDateString()}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => router.push("/profile")}
+                className="retro-button bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                View Profile
+              </Button>
+              <Button
+                onClick={handleSignOut}
+                className="retro-button bg-red-600 hover:bg-red-700 text-white"
+              >
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Dashboard Statistics */}
         <div className="retro-form">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold font-mono mb-4">Dashboard Overview</h2>
-            <Button 
-              onClick={() => exportToCSV([...filteredReports, ...mockHotspots], "dashboard-data")}
+            <h2 className="text-xl font-bold font-mono mb-4">
+              Dashboard Overview
+            </h2>
+            <Button
+              onClick={() =>
+                exportToCSV(
+                  [...filteredReports, ...mockHotspots],
+                  "dashboard-data"
+                )
+              }
               className="retro-button bg-accent hover:bg-accent/80"
             >
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <table className="retro-table">
               <tbody>
@@ -231,7 +376,7 @@ export default function DashboardPage() {
                 </tr>
               </tbody>
             </table>
-            
+
             <table className="retro-table">
               <tbody>
                 <tr>
@@ -252,12 +397,16 @@ export default function DashboardPage() {
         </div>
 
         <div className="retro-form">
-          <h2 className="text-xl font-bold font-mono mb-4">Real-time Monitoring Charts</h2>
-          
+          <h2 className="text-xl font-bold font-mono mb-4">
+            Real-time Monitoring Charts
+          </h2>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Daily Activity Timeline */}
             <div className="bg-background border-2 border-border p-4">
-              <h3 className="text-lg font-bold font-mono mb-4 text-center">24-Hour Activity Timeline</h3>
+              <h3 className="text-lg font-bold font-mono mb-4 text-center">
+                24-Hour Activity Timeline
+              </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={dailyActivityData}>
@@ -267,8 +416,18 @@ export default function DashboardPage() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="reports" fill="#007BBF" name="Reports" />
-                    <Bar dataKey="verifications" fill="#0099CC" name="Verifications" />
-                    <Line type="monotone" dataKey="alerts" stroke="#00B8D4" strokeWidth={3} name="Alerts" />
+                    <Bar
+                      dataKey="verifications"
+                      fill="#0099CC"
+                      name="Verifications"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="alerts"
+                      stroke="#00B8D4"
+                      strokeWidth={3}
+                      name="Alerts"
+                    />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
@@ -276,7 +435,9 @@ export default function DashboardPage() {
 
             {/* Hazard Type Distribution */}
             <div className="bg-background border-2 border-border p-4">
-              <h3 className="text-lg font-bold font-mono mb-4 text-center">Hazard Type Distribution</h3>
+              <h3 className="text-lg font-bold font-mono mb-4 text-center">
+                Hazard Type Distribution
+              </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -302,7 +463,9 @@ export default function DashboardPage() {
 
             {/* Weekly Trends */}
             <div className="bg-background border-2 border-border p-4">
-              <h3 className="text-lg font-bold font-mono mb-4 text-center">Weekly Report Trends</h3>
+              <h3 className="text-lg font-bold font-mono mb-4 text-center">
+                Weekly Report Trends
+              </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyTrendData}>
@@ -321,7 +484,9 @@ export default function DashboardPage() {
 
             {/* State Performance Metrics */}
             <div className="bg-background border-2 border-border p-4">
-              <h3 className="text-lg font-bold font-mono mb-4 text-center">State Performance Metrics</h3>
+              <h3 className="text-lg font-bold font-mono mb-4 text-center">
+                State Performance Metrics
+              </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={statePerformanceData}>
@@ -330,9 +495,27 @@ export default function DashboardPage() {
                     <YAxis stroke="#333" />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="response" stroke="#007BBF" strokeWidth={3} name="Response %" />
-                    <Line type="monotone" dataKey="accuracy" stroke="#0099CC" strokeWidth={3} name="Accuracy %" />
-                    <Line type="monotone" dataKey="coverage" stroke="#00B8D4" strokeWidth={3} name="Coverage %" />
+                    <Line
+                      type="monotone"
+                      dataKey="response"
+                      stroke="#007BBF"
+                      strokeWidth={3}
+                      name="Response %"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="accuracy"
+                      stroke="#0099CC"
+                      strokeWidth={3}
+                      name="Accuracy %"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="coverage"
+                      stroke="#00B8D4"
+                      strokeWidth={3}
+                      name="Coverage %"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -340,7 +523,9 @@ export default function DashboardPage() {
 
             {/* Verification Timeline */}
             <div className="bg-background border-2 border-border p-4 lg:col-span-2">
-              <h3 className="text-lg font-bold font-mono mb-4 text-center">Real-time Verification Timeline</h3>
+              <h3 className="text-lg font-bold font-mono mb-4 text-center">
+                Real-time Verification Timeline
+              </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={verificationTimeline}>
@@ -349,8 +534,24 @@ export default function DashboardPage() {
                     <YAxis stroke="#333" />
                     <Tooltip />
                     <Legend />
-                    <Area type="monotone" dataKey="verified" stackId="1" stroke="#0099CC" fill="#0099CC" fillOpacity={0.7} name="Verified" />
-                    <Area type="monotone" dataKey="pending" stackId="1" stroke="#00B8D4" fill="#00B8D4" fillOpacity={0.7} name="Pending" />
+                    <Area
+                      type="monotone"
+                      dataKey="verified"
+                      stackId="1"
+                      stroke="#0099CC"
+                      fill="#0099CC"
+                      fillOpacity={0.7}
+                      name="Verified"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="pending"
+                      stackId="1"
+                      stroke="#00B8D4"
+                      fill="#00B8D4"
+                      fillOpacity={0.7}
+                      name="Pending"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -373,7 +574,11 @@ export default function DashboardPage() {
         />
 
         {/* Hotspots */}
-        <RetroTable title="Dynamic Hotspots" columns={hotspotColumns} data={mockHotspots} />
+        <RetroTable
+          title="Dynamic Hotspots"
+          columns={hotspotColumns}
+          data={mockHotspots}
+        />
 
         {/* Social Media Activity */}
         <SocialMediaActivity />
@@ -382,7 +587,9 @@ export default function DashboardPage() {
         {selectedReport && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
             <div className="bg-background border-2 border-border p-6 max-w-2xl w-full max-h-96 overflow-y-auto">
-              <h3 className="text-lg font-bold font-mono mb-4">Report Details</h3>
+              <h3 className="text-lg font-bold font-mono mb-4">
+                Report Details
+              </h3>
               <table className="retro-table mb-4">
                 <tbody>
                   <tr>
@@ -420,11 +627,16 @@ export default function DashboardPage() {
                 </tbody>
               </table>
               <div className="space-x-2">
-                <button onClick={() => setSelectedReport(null)} className="retro-button">
+                <button
+                  onClick={() => setSelectedReport(null)}
+                  className="retro-button"
+                >
                   Close
                 </button>
                 {!selectedReport.verified && (
-                  <button className="retro-button bg-accent">Verify Report</button>
+                  <button className="retro-button bg-accent">
+                    Verify Report
+                  </button>
                 )}
               </div>
             </div>
@@ -432,5 +644,5 @@ export default function DashboardPage() {
         )}
       </div>
     </RetroLayout>
-  )
+  );
 }

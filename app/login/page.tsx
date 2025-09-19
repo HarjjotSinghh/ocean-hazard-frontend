@@ -3,6 +3,7 @@
 import { RetroLayout } from "@/components/retro-layout";
 import { useState } from "react";
 import Link from "next/link";
+import { useLogin } from "@/lib/actions/auth";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,11 @@ export default function LoginPage() {
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login, isLoading, error } = useLogin();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", formData);
+    await login(formData.email, formData.password);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +39,12 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-incois-blue mb-2">Ocean Hazard User Reporting</h1>
             <p className="text-incois-gray">Login to access the reporting system</p>
           </div>
+
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
 
           {/* Login Form */}
           <div className="retro-form">
@@ -106,8 +114,9 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   className="retro-button w-full"
+                  disabled={isLoading}
                 >
-                  Sign in
+                  {isLoading ? 'Signing in...' : 'Sign in'}
                 </button>
               </div>
             </form>

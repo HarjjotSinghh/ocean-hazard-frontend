@@ -1,6 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { authClient } from "@/lib/auth-client"
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from "recharts"
 import { RetroLayout } from "@/components/retro-layout"
 import { RetroTable } from "@/components/retro-table"
@@ -114,8 +117,56 @@ const verificationRateData = [
 ]
 
 export default function AnalyticsPage() {
+  const router = useRouter()
   const [selectedTimeRange, setSelectedTimeRange] = useState("24h")
   const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [session, setSession] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: sessionData } = await authClient.getSession()
+
+        if (!sessionData) {
+          router.push('/login')
+          return
+        }
+
+        // Check if user has access to analytics
+        if (!['ANALYST', 'GOVT_OFFICIAL'].includes(sessionData.user.role)) {
+          router.push('/unauthorized')
+          return
+        }
+
+        setSession(sessionData)
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        router.push('/login')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router])
+
+  if (isLoading) {
+    return (
+      <RetroLayout title="Loading...">
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </RetroLayout>
+    )
+  }
+
+  if (!session) {
+    return null // Will redirect to login
+  }
 
   const reportColumns = [
     { key: "id", label: "Report ID" },
