@@ -1,0 +1,21 @@
+.nav-container {
+  background-color: #0066cc;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-container a {
+  text-decoration: none;
+  color: white;
+  background-color: #004aad;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.nav-container a:hover {
+  background-color: #003370;
+}

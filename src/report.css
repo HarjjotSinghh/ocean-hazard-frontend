@@ -1,0 +1,112 @@
+/* Form container */
+.form-container {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.form-container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #004aad;
+}
+
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: bold;
+  color: #333;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #004aad;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Upload section (file + camera) */
+.upload-container {
+  display: flex;
+  align-items: center;  /* ✅ aligns camera with file input */
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.camera-btn {
+  background-color: #004aad;  /* blue background */
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.camera-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+.camera-btn:hover {
+  background-color: #00337f;
+  transform: scale(1.1);
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.submit-btn,
+.reset-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn {
+  background-color: #004aad;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #00337f;
+}
+
+.reset-btn {
+  background-color: #ccc;
+}
+
+.reset-btn:hover {
+  background-color: #999;
+}
+
