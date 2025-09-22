@@ -253,9 +253,9 @@ function Report() {
       // extract GPS if present
       const reader = new FileReader();
       reader.onload = function () {
-        EXIF.getData(file, function () {
-          const lat = EXIF.getTag(this, "GPSLatitude");
-          const lon = EXIF.getTag(this, "GPSLongitude");
+        EXIF.getData(file as any, function () {
+          const lat = EXIF.getTag(file, "GPSLatitude");
+          const lon = EXIF.getTag(file, "GPSLongitude");
           if (lat && lon) {
             setFormData((prev) => ({
               ...prev,

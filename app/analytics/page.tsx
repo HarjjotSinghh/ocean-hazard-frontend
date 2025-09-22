@@ -134,9 +134,13 @@ export default function AnalyticsPage() {
         }
 
         // Check if user has access to analytics
-        if (!['ANALYST', 'GOVT_OFFICIAL'].includes(sessionData.user.role)) {
-          router.push('/unauthorized')
-          return
+        if (
+          !["ANALYST", "GOVT_OFFICIAL"].includes(
+            sessionData.user.role || "USER"
+          )
+        ) {
+          router.push("/unauthorized");
+          return;
         }
 
         setSession(sessionData)
