@@ -1,4 +1,4 @@
-// "use client"
+"use client";
 
 // import { useState } from "react"
 // import { RetroLayout } from "@/components/retro-layout"
@@ -177,11 +177,10 @@
 //   )
 // }
 
-
 // ----------------------------Evraj's Code----------------------------------
 import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import EXIF from "exif-js";
-import "./Form.css";
+// import "./Form.css";
 
 interface FormData {
   hazard: string;
@@ -243,10 +242,16 @@ function Report() {
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
-    if (name === "file" && e.target instanceof HTMLInputElement && e.target.files?.[0]) {
+    if (
+      name === "file" &&
+      e.target instanceof HTMLInputElement &&
+      e.target.files?.[0]
+    ) {
       const file = e.target.files[0];
       setFormData({ ...formData, file });
 
@@ -385,4 +390,3 @@ function Report() {
 }
 
 export default Report;
-
